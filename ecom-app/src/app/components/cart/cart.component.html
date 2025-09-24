@@ -1,72 +1,133 @@
-<div class="container">
-  <h2 class="page-title">Mon Panier</h2>
-
-  <div *ngIf="(cartItems$ | async)?.length === 0; else cartContent"
-       class="empty-cart">
-    <mat-icon class="empty-cart-icon">shopping_cart</mat-icon>
-    <h3>Votre panier est vide</h3>
-    <p>Découvrez nos produits et ajoutez-les à votre panier</p>
-    <button mat-raised-button color="primary" routerLink="/products">
-      Voir nos produits
-    </button>
+<div class="cart-container">
+  <div class="cart-header">
+    <h2>Mon Panier</h2>
+    <div *ngIf="(cartItems$ | async)?.length! > 0" class="total-preview">
+      Total: <strong>{{ cartTotal | currency:'EUR':'symbol':'1.2-2':'fr' }}</strong>
+    </div>
   </div>
 
-  <ng-template #cartContent>
-    <mat-list class="cart-items">
-      <mat-list-item *ngFor="let item of (cartItems$ | async); let last = last">
-        <div matListItemAvatar>
-          <img [src]="item.product.image" [alt]="item.product.name" class="product-image responsive-image">
-        </div>
+  @if ((cartItems$ | async)?.length === 0) {
+    <div class="empty-cart">
+      <mat-icon class="empty-cart-icon">shopping_cart</mat-icon>
+      <h3>Votre panier est vide</h3>
+      <p>Découvrez nos produits et ajoutez-les à votre panier</p>
+      <button mat-raised-button color="primary" routerLink="/products">
+        <mat-icon>shopping_bag</mat-icon>
+        Voir nos produits
+      </button>
+    </div>
+  } @else {
+    <div class="cart-items-container">
+      <!-- Utilisation de @for pour les items du panier -->
+      @for (item of (cartItems$ | async); track item.product.id) {
+        <mat-card class="cart-item-card">
+          <div class="cart-item-content">
 
-        <div matListItemTitle class="item-title">{{ item.product.name }}</div>
-        <div matListItemLine class="item-description">{{ item.product.description }}</div>
-        <div matListItemLine class="item-price">{{ item.product.price | currency:'EUR':'symbol':'1.2-2':'fr' }}</div>
+            <!-- Image du produit -->
+            <div class="product-image-container">
+              <img [src]="item.product.image"
+                   [alt]="item.product.name"
+                   class="product-image"
+                   loading="lazy">
+            </div>
 
-        <div class="quantity-controls">
-          <button mat-icon-button (click)="updateQuantity(item.product.id, item.quantity - 1)">
-            <mat-icon>remove</mat-icon>
-          </button>
+            <!-- Informations du produit -->
+            <div class="product-info">
+              <h3 class="product-name">{{ item.product.name }}</h3>
+              <p class="product-description">{{ item.product.description }}</p>
+              <div class="product-price">
+                {{ item.product.price | currency:'EUR':'symbol':'1.2-2':'fr' }} / unité
+              </div>
+            </div>
 
-          <span class="quantity">{{ item.quantity }}</span>
+            <!-- Contrôles de quantité -->
+            <div class="quantity-controls">
+              <button mat-icon-button
+                      (click)="decreaseQuantity(item.product.id, item.quantity)"
+                      [attr.aria-label]="'Diminuer la quantité de ' + item.product.name"
+                      class="quantity-btn decrease-btn">
+                <mat-icon>remove</mat-icon>
+              </button>
 
-          <button mat-icon-button (click)="updateQuantity(item.product.id, item.quantity + 1)">
-            <mat-icon>add</mat-icon>
-          </button>
-        </div>
+              <div class="quantity-display">
+                <span class="quantity-number">{{ item.quantity }}</span>
+                <span class="quantity-label">unité{{ item.quantity > 1 ? 's' : '' }}</span>
+              </div>
 
-        <div class="item-total">
-          <div class="total-price">
-            {{ (item.product.price * item.quantity) | currency:'EUR':'symbol':'1.2-2':'fr' }}
+              <button mat-icon-button
+                      (click)="increaseQuantity(item.product.id, item.quantity)"
+                      [attr.aria-label]="'Augmenter la quantité de ' + item.product.name"
+                      class="quantity-btn increase-btn">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+
+            <!-- Prix total de l'item -->
+            <div class="item-total-section">
+              <div class="item-subtotal">
+                {{ getItemSubtotal(item) | currency:'EUR':'symbol':'1.2-2':'fr' }}
+              </div>
+
+              <button mat-button
+                      color="warn"
+                      (click)="removeFromCart(item.product.id)"
+                      class="remove-btn">
+                <mat-icon>delete</mat-icon>
+                Supprimer
+              </button>
+            </div>
+
           </div>
-
-          <button mat-button color="warn" (click)="removeFromCart(item.product.id)">
-            <mat-icon>delete</mat-icon>
-            Supprimer
-          </button>
+        </mat-card>
+      } @empty {
+        <div class="empty-cart-message">
+          <p>Votre panier est en cours de chargement...</p>
         </div>
+      }
+    </div>
 
-        <mat-divider *ngIf="!last"></mat-divider>
-      </mat-list-item>
-    </mat-list>
-
+    <!-- Résumé du panier -->
     <mat-card class="cart-summary">
       <mat-card-content>
-        <div class="total-section">
-          <h3>Total: {{ cartTotal | currency:'EUR':'symbol':'1.2-2':'fr' }}</h3>
-        </div>
+        <div class="summary-content">
 
-        <div class="action-buttons">
-          <button mat-button color="warn" (click)="clearCart()">
-            <mat-icon>clear</mat-icon>
-            Vider le panier
-          </button>
+          <div class="summary-details">
+            <div class="summary-line">
+              <span>Nombre d'articles:</span>
+              <span><strong> {{ getTotalQuantity(cartItems$ | async) }}</strong></span>            </div>
+            <div class="summary-line">
+              <span>Sous-total:</span>
+              <span><strong>{{ cartTotal | currency:'EUR':'symbol':'1.2-2':'fr' }}</strong></span>
+            </div>
 
-          <button mat-raised-button color="primary">
-            <mat-icon>payment</mat-icon>
-            Procéder au paiement
-          </button>
+            <mat-divider class="summary-divider"></mat-divider>
+
+            <div class="summary-line total-line">
+              <span>Total à payer:</span>
+              <span class="final-total">{{ cartTotal | currency:'EUR':'symbol':'1.2-2':'fr' }}</span>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button mat-raised-button
+                    color="warn"
+                    (click)="clearCart()"
+                    class="clear-btn">
+              <mat-icon>clear_all</mat-icon>
+              Vider le panier
+            </button>
+
+            <button mat-raised-button
+                    color="primary"
+                    (click)="proceedToCheckout()"
+                    class="checkout-btn">
+              <mat-icon>payment</mat-icon>
+              Procéder au paiement
+            </button>
+          </div>
+
         </div>
       </mat-card-content>
     </mat-card>
-  </ng-template>
+  }
 </div>

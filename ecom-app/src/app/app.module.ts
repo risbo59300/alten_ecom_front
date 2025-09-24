@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import {
   BrowserModule,
   provideClientHydration,
@@ -27,7 +27,10 @@ import { ContactComponent } from './components/contact/contact.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
 
+registerLocaleData(localeFr);
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,7 +60,8 @@ import { MatInputModule } from '@angular/material/input';
 ],
   providers: [
     provideClientHydration(),
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    {provide: LOCALE_ID, useValue: 'fr'}
   ],
   bootstrap: [AppComponent],
 })

@@ -2,9 +2,14 @@
   <h2 class="page-title">Nos Produits</h2>
 
   <div class="products-grid">
-    <app-product-card
-      *ngFor="let product of (products$ | async)"
-      [product]="product">
-    </app-product-card>
+    @for (product of (products$ | async); track product.id) {
+      <app-product-card [product]="product"></app-product-card>
+    } @empty {
+      <div class="empty-products">
+        <mat-icon class="empty-icon">shopping_bag</mat-icon>
+        <h3>Aucun produit disponible</h3>
+        <p>Nos produits seront bientôt disponibles</p>
+      </div>
+    }
   </div>
 </div>

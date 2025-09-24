@@ -1,14 +1,15 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Product } from '../../models/product';
 import { CartService } from '../../services/cart.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ThemePalette } from '@angular/material/core';
 
 @Component({
   selector: 'app-product-card',
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css'
 })
-export class ProductCardComponent {
+export class ProductCardComponent implements OnInit {
 
   @Input() product!: Product;
 
@@ -51,6 +52,19 @@ export class ProductCardComponent {
         return 'Rupture de stock';
       default:
         return 'Indisponible';
+    }
+  }
+
+   getStatusColor(): ThemePalette {
+    switch (this.product.inventoryStatus) {
+      case 'INSTOCK':
+        return 'primary';
+      case 'LOWSTOCK':
+        return 'accent';
+      case 'OUTOFSTOCK':
+        return 'warn';
+      default:
+        return undefined;
     }
   }
 

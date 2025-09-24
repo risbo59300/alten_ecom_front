@@ -4,22 +4,29 @@
     <mat-card-subtitle>{{ product.category }}</mat-card-subtitle>
 
     <div class="status-chip">
-      <mat-chip [color]="getStatusBadgeClass()" selected>
+      <mat-chip [color]="getStatusColor()" selected>
         {{ getStatusText() }}
       </mat-chip>
     </div>
   </mat-card-header>
 
-  <img mat-card-image class="product-image" [src]="product.image" [alt]="product.name">
+  <!-- Image avec lazy loading pour améliorer les performances -->
+  <img mat-card-image
+       [src]="product.image"
+       [alt]="product.name"
+       loading="lazy"
+       decoding="async">
 
   <mat-card-content>
     <p class="product-description">{{ product.description }}</p>
 
+    <!-- Optimisation avec @for pour les étoiles -->
     <div class="product-rating">
-      <mat-icon *ngFor="let star of getRatingStars(); let i = index"
-               [color]="i < product.rating ? 'accent' : ''">
-        {{ i < product.rating ? 'star' : 'star_border' }}
-      </mat-icon>
+      @for (star of getRatingStars(); track star; let i = $index) {
+        <mat-icon [color]="i < product.rating ? 'accent' : ''">
+          {{ i < product.rating ? 'star' : 'star_border' }}
+        </mat-icon>
+      }
       <span class="rating-text">({{ product.rating }})</span>
     </div>
 
