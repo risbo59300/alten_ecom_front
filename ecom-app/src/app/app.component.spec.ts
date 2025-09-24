@@ -1,16 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { Component } from '@angular/core';
 
-describe('AppComponent', () => {
+@Component({
+  selector: 'app-header',
+  template: '<div>Mock Header</div>'
+})
+class MockHeaderComponent {}
+
+describe('AppComponent (Integration)', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
-      ],
+      imports: [RouterTestingModule],
+      declarations: [AppComponent, MockHeaderComponent]
     }).compileComponents();
   });
 
@@ -20,16 +23,11 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'ecom-app'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('ecom-app');
-  });
-
-  it('should render title', () => {
+  it('should render header and main content', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, ecom-app');
+    expect(compiled.querySelector('app-header')).toBeTruthy();
+    expect(compiled.querySelector('main')).toBeTruthy();
   });
 });
