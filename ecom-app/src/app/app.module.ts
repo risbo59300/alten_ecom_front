@@ -23,6 +23,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ContactComponent } from './components/contact/contact.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -31,11 +35,13 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     ProductListComponent,
     CartComponent,
     HeaderComponent,
+    ContactComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     MatToolbarModule,
     MatButtonModule,
     MatCardModule,
@@ -45,8 +51,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatListModule,
     MatChipsModule,
     MatDividerModule,
-    MatSnackBarModule
-  ],
+    MatSnackBarModule,
+    MatFormFieldModule,
+    MatInputModule
+],
   providers: [
     provideClientHydration(),
     provideAnimationsAsync()
