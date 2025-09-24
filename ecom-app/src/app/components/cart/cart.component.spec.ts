@@ -9,6 +9,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CartItem } from '../../models/cart-item';
 import { CartService } from '../../services/cart.service';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('CartComponent', () => {
   let component: CartComponent;
@@ -54,7 +55,8 @@ let cartServiceSpy: jasmine.SpyObj<CartService>;
         MatButtonModule,
         MatIconModule,
         MatSnackBarModule,
-        RouterTestingModule
+        RouterTestingModule,
+        NoopAnimationsModule 
       ],
       providers: [
         { provide: CartService, useValue: spy }

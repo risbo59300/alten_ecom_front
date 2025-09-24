@@ -67,9 +67,11 @@ export class ContactComponent implements OnInit {
     if (messageControl?.hasError('required')) {
       return 'Vous devez entrer un message' ;
     }
+
     if (messageControl?.hasError('maxLength')) {
       return 'Le message ne doit pas dépasser 300 caractères' ;
     }
+    
     return '' ;
   }
 

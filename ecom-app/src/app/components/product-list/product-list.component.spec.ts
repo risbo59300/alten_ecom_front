@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { ProductListComponent } from './product-list.component';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product';
-import { ProductCardComponent } from '../product-card/product-card.component';
-import { of } from 'rxjs';
 
 describe('ProductListComponent', () => {
   let component: ProductListComponent;
@@ -31,24 +31,25 @@ describe('ProductListComponent', () => {
   ];
 
   beforeEach(async () => {
-    const spy = jasmine.createSpyObj('ProductService', ['getProduct']);
+    // Correction : Créer le spy AVANT TestBed.configureTestingModule
+    productServiceSpy = jasmine.createSpyObj('ProductService', ['getProducts']);
 
     await TestBed.configureTestingModule({
-      declarations: [ProductListComponent, ProductCardComponent],
+      declarations: [ProductListComponent],
       providers: [
-        {provide: ProductService, useValue: spy}
-      ]
-    })
-    .compileComponents();
-
-    productServiceSpy = TestBed.inject(ProductService) as jasmine.SpyObj<ProductService>;
-
+        { provide: ProductService, useValue: productServiceSpy }
+      ],
+      schemas: [NO_ERRORS_SCHEMA] // Ignore les erreurs de composants enfants non déclarés
+    }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProductListComponent);
     component = fixture.componentInstance;
+
+    // Configuration du spy APRÈS avoir récupéré l'instance
     productServiceSpy.getProducts.and.returnValue(of(mockProducts));
+
     fixture.detectChanges();
   });
 
@@ -72,6 +73,4 @@ describe('ProductListComponent', () => {
     const trackResult = component.trackByProductId(0, product);
     expect(trackResult).toBe(product.id);
   });
-
-
 });

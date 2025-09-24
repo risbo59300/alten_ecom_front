@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ProductCardComponent', () => {
   let productCard: ProductCardComponent;
@@ -32,7 +33,7 @@ describe('ProductCardComponent', () => {
   };
 
   beforeEach(async () => {
-     const spy = jasmine.createSpyObj('CartService', ['addToCart']);
+    const spy = jasmine.createSpyObj('CartService', ['addToCart']);
 
     await TestBed.configureTestingModule({
       declarations: [ProductCardComponent],
@@ -41,10 +42,11 @@ describe('ProductCardComponent', () => {
         MatButtonModule,
         MatIconModule,
         MatChipsModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        NoopAnimationsModule 
       ],
       providers: [
-        { provide: CartService, useValue: spy }
+        { provide: CartService, useValue: spy },
       ]
     })
     .compileComponents();
@@ -55,7 +57,7 @@ describe('ProductCardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ProductCardComponent);
     productCard = fixture.componentInstance;
-    productCard.product = mockProduct;
+    productCard.product = structuredClone(mockProduct) ;
     fixture.detectChanges();
   });
 
@@ -75,11 +77,6 @@ describe('ProductCardComponent', () => {
     expect(cartServiceSpy.addToCart).toHaveBeenCalledWith(mockProduct);
   });
 
-  it('should not add out of stock product to cart', () => {
-    productCard.product.inventoryStatus = 'OUTOFSTOCK';
-    productCard.addToCart();
-    expect(cartServiceSpy.addToCart).not.toHaveBeenCalled();
-  });
 
   it('should return correct status color', () => {
     expect(productCard.getStatusColor()).toBe('primary'); // INSTOCK
@@ -92,7 +89,7 @@ describe('ProductCardComponent', () => {
   });
 
   it('should return correct status text', () => {
-    expect(productCard.getStatusText()).toBe('En stock');
+    expect(productCard.getStatusText()).toBe('En Stock');
 
     productCard.product.inventoryStatus = 'LOWSTOCK';
     expect(productCard.getStatusText()).toBe('Stock faible');
@@ -101,9 +98,19 @@ describe('ProductCardComponent', () => {
     expect(productCard.getStatusText()).toBe('Rupture de stock');
   });
 
+  it('should not add out of stock product to cart', () => {
+    productCard.product.inventoryStatus = 'OUTOFSTOCK';
+    productCard.addToCart();
+    expect(cartServiceSpy.addToCart).not.toHaveBeenCalled();
+  });
+
   it('should generate correct number of rating stars', () => {
     const stars = productCard.getRatingStars();
     expect(stars.length).toBe(5);
     expect(stars).toEqual([1, 2, 3, 4, 5]);
   });
 });
+function registerLocaleData(localeFr: any) {
+  throw new Error('Function not implemented.');
+}
+

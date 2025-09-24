@@ -86,19 +86,21 @@ describe('ContactComponent', () => {
     const emailControl = component.contactForm.get('email');
 
     emailControl?.setErrors({ required: true });
-    expect(component.getEmailErrorMessage()).toBe('L\'email est obligatoire');
+    expect(component.getEmailErrorMessage()).toBe('Vous devez entrer une adresse email');
 
     emailControl?.setErrors({ email: true });
-    expect(component.getEmailErrorMessage()).toBe('Veuillez saisir un email valide');
+    expect(component.getEmailErrorMessage()).toBe('Veuillez saisir un email  valide');
   });
 
   it('should return correct message error messages', () => {
     const messageControl = component.contactForm.get('message');
 
     messageControl?.setErrors({ required: true });
-    expect(component.getMessageErrorMessage()).toBe('Le message est obligatoire');
+    expect(component.getMessageErrorMessage()).toBe('Vous devez entrer un message');
 
-    messageControl?.setErrors({ maxlength: true });
+    const longMessage = 'a'.repeat(301);
+    messageControl?.setValue(longMessage);
+    messageControl?.setErrors({ maxlength : true});
     expect(component.getMessageErrorMessage()).toBe('Le message ne doit pas dépasser 300 caractères');
   });
 

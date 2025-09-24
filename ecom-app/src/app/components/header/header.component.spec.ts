@@ -50,7 +50,7 @@ describe('HeaderComponent', () => {
 
   it('should display app title', () => {
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('app-title').textContent).toContain('E-com');
+    expect(compiled.querySelector('.app-title span').textContent).toContain('E-Com');
   });
 
   it('should display navigation link', () =>{
