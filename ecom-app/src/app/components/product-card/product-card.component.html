@@ -1,0 +1,41 @@
+<mat-card class="product-card">
+  <mat-card-header>
+    <mat-card-title>{{ product.name }}</mat-card-title>
+    <mat-card-subtitle>{{ product.category }}</mat-card-subtitle>
+
+    <div class="status-chip">
+      <mat-chip [color]="getStatusBadgeClass()" selected>
+        {{ getStatusText() }}
+      </mat-chip>
+    </div>
+  </mat-card-header>
+
+  <img mat-card-image class="product-image" [src]="product.image" [alt]="product.name">
+
+  <mat-card-content>
+    <p class="product-description">{{ product.description }}</p>
+
+    <div class="product-rating">
+      <mat-icon *ngFor="let star of getRatingStars(); let i = index"
+               [color]="i < product.rating ? 'accent' : ''">
+        {{ i < product.rating ? 'star' : 'star_border' }}
+      </mat-icon>
+      <span class="rating-text">({{ product.rating }})</span>
+    </div>
+
+    <div class="product-info">
+      <div class="price">{{ product.price | currency:'EUR':'symbol':'1.2-2':'fr' }}</div>
+      <div class="code">Code: {{ product.code }}</div>
+      <div class="quantity">Stock: {{ product.quantity }}</div>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-raised-button color="primary"
+            (click)="addToCart()"
+            [disabled]="product.inventoryStatus === 'OUTOFSTOCK'">
+      <mat-icon>add_shopping_cart</mat-icon>
+      {{ product.inventoryStatus === 'OUTOFSTOCK' ? 'Non disponible' : 'Ajouter au panier' }}
+    </button>
+  </mat-card-actions>
+</mat-card>

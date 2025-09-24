@@ -1,0 +1,38 @@
+<mat-toolbar color="primary" class="header-toolbar">
+  <div class="header-content">
+    <div class="app-title">
+      <span >E-Com</span>
+    </div>
+
+    <nav class="nav-menu">
+      <div class="nav-links">
+        <button mat-button routerLink="/" class="nav-button">
+          <mat-icon>home</mat-icon>
+          <span>Accueil</span>
+        </button>
+
+        <button mat-button routerLink="/products" class="nav-button">
+          <mat-icon>shopping_bag</mat-icon>
+          <span>Produits</span>
+        </button>
+      </div>
+
+      <div class="cart-section">
+        <button mat-button routerLink="/cart" class="cart-button">
+          <mat-icon>shopping_cart</mat-icon>
+          <span class="cart-text">
+            Panier
+            <span *ngIf="(cartItemsCount$ | async)! > 0" class="cart-count-text">
+              ({{ cartItemsCount$ | async }})
+            </span>
+          </span>
+
+          <!-- Badge personnalisé pour le panier -->
+          <span *ngIf="(cartItemsCount$ | async)! > 0" class="cart-badge">
+            {{ cartItemsCount$ | async }}
+          </span>
+        </button>
+      </div>
+    </nav>
+  </div>
+</mat-toolbar>
